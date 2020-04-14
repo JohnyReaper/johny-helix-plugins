@@ -25,3 +25,5 @@ then depending on which fire addon you chose, place the appropriate folder with 
 
 ex for vfire:
 ``` garrysmod\addons\vfire_immolator ```
+
+![Image of Cremator](https://i.imgur.com/20cZf1p.jpg)
