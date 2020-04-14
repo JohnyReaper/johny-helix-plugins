@@ -1,0 +1,9 @@
+ENT.Type = "anim"
+ENT.Base = "base_entity"
+ENT.PrintName = "Rockets"
+ENT.Author = "Battlepope"
+ENT.Spawnable = true
+ENT.AdminSpawnable = true 
+ENT.Category = "Hl2 Beta Ammo"
+ENT.AmmoType = "bp_rocket"
+ENT.Amount = 1

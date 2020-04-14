@@ -1,0 +1,9 @@
+ENT.Type = "anim"
+ENT.Base = "base_entity"
+ENT.PrintName = "Medium Rounds"
+ENT.Author = "Battlepope"
+ENT.Spawnable = true
+ENT.AdminSpawnable = true 
+ENT.Category = "Hl2 Beta Ammo"
+ENT.AmmoType = "bp_medium"
+ENT.Amount = 45
