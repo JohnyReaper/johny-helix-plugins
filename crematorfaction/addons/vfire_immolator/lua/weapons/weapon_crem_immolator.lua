@@ -1,6 +1,7 @@
 
 AddCSLuaFile()
 AddCSLuaFile("effects/vfirethrower_jet.lua")
+AddCSLuaFile("effects/vfirethrower_jet2.lua")
 
 if SERVER then
 	resource.AddWorkshop("1525572545")
