@@ -8,7 +8,7 @@ Adds playable Cremator faction with model, animations and sweps
 
 If you want to use the immolator, choose one of the two addons
 
-**vFire:** https://steamcommunity.com/sharedfiles/filedetails/?id=1525572545&searchtext=vfire (Recommended)
+**vFire:** https://steamcommunity.com/sharedfiles/filedetails/?id=1525572545 (Recommended)
 
 or
 
