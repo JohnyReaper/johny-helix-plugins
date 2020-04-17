@@ -28,7 +28,7 @@ ex for vfire:
 
 ![Image of Cremator](https://i.imgur.com/20cZf1p.jpg)
 
-▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+
 
 # Admin Spawn Menu
 
