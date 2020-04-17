@@ -27,3 +27,9 @@ ex for vfire:
 ``` garrysmod\addons\vfire_immolator ```
 
 ![Image of Cremator](https://i.imgur.com/20cZf1p.jpg)
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+
+# Admin Spawn Menu
+
+Easily spawn any helix item by GUI
