@@ -91,10 +91,15 @@ end
 function SWEP:DispatchEffect(EFFECTSTR)
 	local pPlayer=self.Owner;
 	if !pPlayer then return end
-	local view;
-	if CLIENT then view=GetViewEntity() else view=pPlayer:GetViewEntity() end
+	if (SERVER) then return end
+	local view=GetViewEntity();
 		if ( !pPlayer:IsNPC() && view:IsPlayer() ) then
-			ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer:GetViewModel(), pPlayer:GetViewModel():LookupAttachment( "muzzle" ) );
+			if (pPlayer:CanOverrideView() and LocalPlayer():GetViewEntity() == LocalPlayer()) then
+				ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer, pPlayer:LookupAttachment( "rightclaw" ) );
+				ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer, pPlayer:LookupAttachment( "leftclaw" ) );
+			else
+				ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer:GetViewModel(), pPlayer:GetViewModel():LookupAttachment( "muzzle" ) );
+			end
 		else
 			ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer, pPlayer:LookupAttachment( "rightclaw" ) );
 			ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer, pPlayer:LookupAttachment( "leftclaw" ) );
@@ -104,10 +109,15 @@ end
 function SWEP:ShootEffect(EFFECTSTR,startpos,endpos)
 	local pPlayer=self.Owner;
 	if !pPlayer then return end
-	local view;
-	if CLIENT then view=GetViewEntity() else view=pPlayer:GetViewEntity() end
+	if (SERVER) then return end
+	local view=GetViewEntity();
+
 		if ( !pPlayer:IsNPC() && view:IsPlayer() ) then
-			util.ParticleTracerEx( EFFECTSTR, self.Weapon:GetAttachment( self.Weapon:LookupAttachment( "muzzle" ) ).Pos,endpos, true, pPlayer:GetViewModel():EntIndex(), pPlayer:GetViewModel():LookupAttachment( "muzzle" ) );
+			if (pPlayer:CanOverrideView() and LocalPlayer():GetViewEntity() == LocalPlayer()) then
+				util.ParticleTracerEx( EFFECTSTR, pPlayer:GetAttachment( pPlayer:LookupAttachment( "rightclaw" ) ).Pos,endpos, true,pPlayer:EntIndex(), pPlayer:LookupAttachment( "rightclaw" ) );
+			else	
+				util.ParticleTracerEx( EFFECTSTR, self.Weapon:GetAttachment( self.Weapon:LookupAttachment( "muzzle" ) ).Pos,endpos, true, pPlayer:GetViewModel():EntIndex(), pPlayer:GetViewModel():LookupAttachment( "muzzle" ) );
+			end
 		else
 			util.ParticleTracerEx( EFFECTSTR, pPlayer:GetAttachment( pPlayer:LookupAttachment( "rightclaw" ) ).Pos,endpos, true,pPlayer:EntIndex(), pPlayer:LookupAttachment( "rightclaw" ) );
 		end

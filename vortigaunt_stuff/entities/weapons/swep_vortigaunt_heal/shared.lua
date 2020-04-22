@@ -74,7 +74,7 @@ function SWEP:DispatchEffect(EFFECTSTR)
 	local view;
 	if CLIENT then view=GetViewEntity() else view=pPlayer:GetViewEntity() end
 		if ( !pPlayer:IsNPC() && view:IsPlayer() ) then
-			-- ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer:GetViewModel(), pPlayer:GetViewModel():LookupAttachment( "muzzle" ) );
+			ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer, pPlayer:LookupAttachment( "leftclaw" ) );
 		else
 			ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer, pPlayer:LookupAttachment( "leftclaw" ) );
 		end
