@@ -47,13 +47,12 @@ SWEP.HealDelay				= 1		//we heal again CurTime()+self.HealDelay
 SWEP.MaxArmor				= 18	//used for the math.random
 SWEP.MinArmor				= 12	//"		"	"	"
 SWEP.ArmorLimit				= 100	//100 is the default hl2 armor limit
-SWEP.BeamDamage				= 25	//25 is done by one zap attack,since vortigaunt has two claws,50 dmg,
-									//100 is the real damage,try to make a vortigaunt hate you,and if you have 100 hp,you will be oneshotted
+SWEP.BeamDamage				= 25	
 SWEP.BeamChargeTime			= 0.5	//the delay used to charge the beam and zap!
 SWEP.Deny					= Sound("Buttons.snd19")			
 
 SWEP.Primary.ClipSize		= -1
-SWEP.Primary.DefaultClip	= 1000		//give the poor user 25 combine balls to have fun with this wepon
+SWEP.Primary.DefaultClip	= 100
 SWEP.Primary.Ammo 			= "AR2AltFire"
 SWEP.Primary.Automatic		= true
 
