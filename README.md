@@ -34,7 +34,7 @@ ex for vfire:
 
 Easily spawn any helix item by GUI
 
-# Vortigaunt staff
+# Vortigaunt stuff
 
 Adds playable vortigaunt and enslaved vortigaunt fraction
 
