@@ -43,6 +43,5 @@ Three new sweps
 - Vortigaunt heal ability [Configurable in game]
 - Broom
 
-This plugin adds also vortigese
-
+This plugin adds also vortigese.
 The Vortigaunts can speak in their own language that only understood by them
