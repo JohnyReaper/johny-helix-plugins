@@ -45,3 +45,5 @@ Three new sweps
 
 This plugin adds also vortigese.
 The Vortigaunts can speak in their own language that only understood by them
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=126657424 is needed to avoid the viewmodel error
