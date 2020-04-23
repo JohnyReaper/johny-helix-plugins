@@ -1,7 +1,8 @@
 PLUGIN.name = "Vortigaunt Faction"
-PLUGIN.author = "JohnyReaper"
+PLUGIN.author = "JohnyReaper | Voicelines: sQubany"
 PLUGIN.description = "Adds some features for vortigaunts."
 
+ix.util.Include("sh_voices.lua")
 
 ix.config.Add("VortHealMin", 5, "Minimum health value that can be healed by vortigaunt" , nil, {
 	data = {min = 1, max = 100},
