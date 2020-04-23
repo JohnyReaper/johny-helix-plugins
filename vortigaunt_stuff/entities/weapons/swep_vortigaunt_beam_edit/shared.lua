@@ -75,7 +75,7 @@ end
 function SWEP:Precache()
 	PrecacheParticleSystem( "vortigaunt_beam" );		//the zap beam
 	PrecacheParticleSystem( "vortigaunt_beam_charge" );	//the glow particles
-	-- util.PrecacheModel(self.ViewModel)					//the... come on,that's obvious
+	util.PrecacheModel(self.ViewModel)					//the... come on,that's obvious
 end
 
 function SWEP:CreateSounds()
