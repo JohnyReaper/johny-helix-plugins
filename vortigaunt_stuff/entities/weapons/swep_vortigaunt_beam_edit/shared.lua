@@ -52,8 +52,8 @@ SWEP.BeamChargeTime			= 0.5	//the delay used to charge the beam and zap!
 SWEP.Deny					= Sound("Buttons.snd19")			
 
 SWEP.Primary.ClipSize		= -1
-SWEP.Primary.DefaultClip	= 100
-SWEP.Primary.Ammo 			= "AR2AltFire"
+SWEP.Primary.DefaultClip	= -1
+SWEP.Primary.Ammo 			= false
 SWEP.Primary.Automatic		= true
 
 
@@ -67,7 +67,7 @@ function SWEP:Initialize()
 	self.Healing=false;	//we are not healing!
 	self.HealTime=CurTime();//we can heal
 	self.ChargeTime=CurTime();//we can zap
-	self:SetWeaponHoldType("beam")//this is the better holdtype i could find,well,it fits its job
+	self:SetWeaponHoldType("beam")
 	if (CLIENT) then return end
 	self:CreateSounds()			//create the looping sounds	
 end 
@@ -75,7 +75,7 @@ end
 function SWEP:Precache()
 	PrecacheParticleSystem( "vortigaunt_beam" );		//the zap beam
 	PrecacheParticleSystem( "vortigaunt_beam_charge" );	//the glow particles
-	util.PrecacheModel(self.ViewModel)					//the... come on,that's obvious
+	-- util.PrecacheModel(self.ViewModel)					//the... come on,that's obvious
 end
 
 function SWEP:CreateSounds()
@@ -88,18 +88,19 @@ function SWEP:CreateSounds()
 	end
 end
 
+function SWEP:Deploy()
+	self.Weapon:SendWeaponAnim( ACT_VM_DRAW )
+	self:SetDeploySpeed( 1 )
+	return true
+end
+
 function SWEP:DispatchEffect(EFFECTSTR)
 	local pPlayer=self.Owner;
 	if !pPlayer then return end
-	if (SERVER) then return end
-	local view=GetViewEntity();
+	local view
+	if CLIENT then view=GetViewEntity() else view=pPlayer:GetViewEntity() end
 		if ( !pPlayer:IsNPC() && view:IsPlayer() ) then
-			if (pPlayer:CanOverrideView() and LocalPlayer():GetViewEntity() == LocalPlayer()) then
-				ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer, pPlayer:LookupAttachment( "rightclaw" ) );
-				ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer, pPlayer:LookupAttachment( "leftclaw" ) );
-			else
-				ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer:GetViewModel(), pPlayer:GetViewModel():LookupAttachment( "muzzle" ) );
-			end
+			ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer:GetViewModel(), pPlayer:GetViewModel():LookupAttachment( "muzzle" ) );
 		else
 			ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer, pPlayer:LookupAttachment( "rightclaw" ) );
 			ParticleEffectAttach( EFFECTSTR, PATTACH_POINT_FOLLOW, pPlayer, pPlayer:LookupAttachment( "leftclaw" ) );
@@ -109,15 +110,12 @@ end
 function SWEP:ShootEffect(EFFECTSTR,startpos,endpos)
 	local pPlayer=self.Owner;
 	if !pPlayer then return end
-	if (SERVER) then return end
-	local view=GetViewEntity();
-
+	local view
+	if CLIENT then view=GetViewEntity() else view=pPlayer:GetViewEntity() end
 		if ( !pPlayer:IsNPC() && view:IsPlayer() ) then
-			if (pPlayer:CanOverrideView() and LocalPlayer():GetViewEntity() == LocalPlayer()) then
-				util.ParticleTracerEx( EFFECTSTR, pPlayer:GetAttachment( pPlayer:LookupAttachment( "rightclaw" ) ).Pos,endpos, true,pPlayer:EntIndex(), pPlayer:LookupAttachment( "rightclaw" ) );
-			else	
-				util.ParticleTracerEx( EFFECTSTR, self.Weapon:GetAttachment( self.Weapon:LookupAttachment( "muzzle" ) ).Pos,endpos, true, pPlayer:GetViewModel():EntIndex(), pPlayer:GetViewModel():LookupAttachment( "muzzle" ) );
-			end
+			if CLIENT and pPlayer:CanOverrideView() then return end
+			util.ParticleTracerEx( EFFECTSTR, self.Weapon:GetAttachment( self.Weapon:LookupAttachment( "muzzle" ) ).Pos,endpos, true, pPlayer:GetViewModel():EntIndex(), pPlayer:GetViewModel():LookupAttachment( "muzzle" ) );
+			-- util.ParticleTracerEx( EFFECTSTR, pPlayer:GetAttachment( pPlayer:LookupAttachment( "rightclaw" ) ).Pos,endpos, true,pPlayer:EntIndex(), pPlayer:LookupAttachment( "rightclaw" ) );
 		else
 			util.ParticleTracerEx( EFFECTSTR, pPlayer:GetAttachment( pPlayer:LookupAttachment( "rightclaw" ) ).Pos,endpos, true,pPlayer:EntIndex(), pPlayer:LookupAttachment( "rightclaw" ) );
 		end
@@ -211,12 +209,6 @@ function SWEP:StopEveryThing()
 		pPlayer:StopParticles();
 end
 
-function SWEP:Deploy()
-	self.Weapon:SendWeaponAnim( ACT_VM_DRAW )
-	self:SetDeploySpeed( 1 )
-	return true
-end
-
 function SWEP:GiveArmor()
 	if CLIENT then return end
 	local arm=math.random(self.MinArmor,self.MaxArmor)
@@ -227,14 +219,10 @@ end
 
 
 function SWEP:PrimaryAttack()
-	if self.Charging || self.Healing then return end
-	
-	if self.Owner:GetAmmoCount(self.Primary.Ammo)<self.AmmoPerUse then 
-	self.Weapon:EmitSound(self.Deny)
-	self.Weapon:SetNextPrimaryFire(CurTime()+SoundDuration(self.Deny))
-	self.Weapon:SetNextSecondaryFire(CurTime()+SoundDuration(self.Deny))
-	return 
-	end
+
+	if (SERVER) and self.Owner:Health() <= 50 then 
+	self.Owner:NotifyLocalized("You are too weak to perform zap attack!")
+	return end
 	
 	self:DispatchEffect("vortigaunt_charge_token_b")
 	self:DispatchEffect("vortigaunt_charge_token_c")
@@ -247,14 +235,11 @@ function SWEP:PrimaryAttack()
 	timer.Simple(0.5,function()
 		if (!self.Owner:Alive()) then return end
 
-		self.Weapon:TakePrimaryAmmo(1)
-
 		if IsValid(self.Owner:GetViewModel())then self.Owner:GetViewModel():StopParticles() end
 			self.Owner:StopParticles()
 			-- self.Charging=false;
 			self:Shoot()
 			self.Weapon:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
-			-- self:DispatchEffect("vortigaunt_charge_token")
 			timer.Simple(0.75,function()if !IsValid(self.Owner) || self.Owner:GetActiveWeapon()!=self || !IsValid(self)  then return end self.Weapon:SendWeaponAnim(ACT_VM_IDLE)end)
 			if SERVER && self.ChargeSound then	
 				self.ChargeSound:Stop()
@@ -276,19 +261,14 @@ function SWEP:PrimaryAttack()
 	if SERVER && self.ChargeSound then
 	self.ChargeSound:PlayEx( 100, 150 );
 	end
-	self.Weapon:SetNextPrimaryFire(CurTime()+1.5)
-	self.Weapon:SetNextSecondaryFire(CurTime()+1.5)
+	self.Weapon:SetNextPrimaryFire(CurTime()+2)
+	self.Weapon:SetNextSecondaryFire(CurTime()+2)
 end
 
 
 function SWEP:SecondaryAttack()
 	if self.Owner:Armor()>=self.ArmorLimit then return end
-		if self.Owner:GetAmmoCount(self.Primary.Ammo)<self.AmmoPerUse  then 
-		self.Weapon:EmitSound(self.Deny)
-		self.Weapon:SetNextPrimaryFire(CurTime()+SoundDuration(self.Deny))
-		self.Weapon:SetNextSecondaryFire(CurTime()+SoundDuration(self.Deny))
-		return 
-		end
+
 	self.HealTime=CurTime()+self.HealDelay;
 	self:DispatchEffect("vortigaunt_charge_token")
 	self.Weapon:SendWeaponAnim(ACT_VM_RELOAD)
@@ -301,7 +281,6 @@ function SWEP:SecondaryAttack()
 		if IsValid(self.Owner:GetViewModel())then self.Owner:GetViewModel():StopParticles() end
 			self.Owner:StopParticles()
 		self:GiveArmor()
-		self.Weapon:TakePrimaryAmmo(1)
 		if SERVER && self.HealingSound then	self.HealingSound:Stop() end
 		if !IsValid(self.Owner) || self.Owner:GetActiveWeapon()!=self || !IsValid(self)  then return end self.Weapon:SendWeaponAnim(ACT_VM_IDLE)
 		self.Owner:GetViewModel():EmitSound(self.HealSound)
