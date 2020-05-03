@@ -54,7 +54,7 @@ SWEP.Deny					= Sound("Buttons.snd19")
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1
 SWEP.Primary.Ammo 			= false
-SWEP.Primary.Automatic		= true
+SWEP.Primary.Automatic		= false
 
 
 SWEP.Secondary.ClipSize		= -1
@@ -75,6 +75,7 @@ end
 function SWEP:Precache()
 	PrecacheParticleSystem( "vortigaunt_beam" );		//the zap beam
 	PrecacheParticleSystem( "vortigaunt_beam_charge" );	//the glow particles
+	PrecacheParticleSystem( "vortigaunt_charge_token" );
 	util.PrecacheModel(self.ViewModel)					//the... come on,that's obvious
 end
 
@@ -220,8 +221,11 @@ end
 
 function SWEP:PrimaryAttack()
 
-	if (SERVER) and self.Owner:Health() <= 50 then 
-	self.Owner:NotifyLocalized("You are too weak to perform zap attack!")
+	if self.Owner:Health() <= 50 then 
+		if (SERVER) then
+		self.Owner:NotifyLocalized("You are too weak to heal someone!")
+		end
+		self.Weapon:SetNextPrimaryFire(CurTime()+2)
 	return end
 	
 	self:DispatchEffect("vortigaunt_charge_token_b")
@@ -233,10 +237,9 @@ function SWEP:PrimaryAttack()
 	self.Owner:SetAnimation(PLAYER_ATTACK1)
 
 	timer.Simple(0.5,function()
-		if (!self.Owner:Alive()) then return end
-
 		if IsValid(self.Owner:GetViewModel())then self.Owner:GetViewModel():StopParticles() end
 			self.Owner:StopParticles()
+			if (!self.Owner:Alive()) then return end
 			-- self.Charging=false;
 			self:Shoot()
 			self.Weapon:SendWeaponAnim(ACT_VM_SECONDARYATTACK)

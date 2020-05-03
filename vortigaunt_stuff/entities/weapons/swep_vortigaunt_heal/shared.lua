@@ -90,32 +90,48 @@ function SWEP:PrimaryAttack()
 
 	local eye = self.Owner:GetEyeTrace()
 	
-	if eye.HitPos:Distance(self.Owner:GetShootPos()) > 70 then return end
 	if (!eye.Entity:IsPlayer()) then return end
-	if (SERVER) and self.Owner:Health() <= 50 then 
+	if self.Owner:Health() <= 50 then
+		if (SERVER) then
 		self.Owner:NotifyLocalized("You are too weak to heal someone!")
-		return end
+		end
+	return end
+	local target = eye.Entity
+
+	if target:GetPos():Distance(self.Owner:GetShootPos()) > 105 then return end
+
+	if target:Health() >= target:GetMaxHealth() then 
+		if (SERVER) then
+		self.Owner:NotifyLocalized("The target is perfectly healthy!")
+		end
+	return end
 
 	self:DispatchEffect("vortigaunt_charge_token")
 
-	local target = eye.Entity
 	if (SERVER) then
-		
-		if target:Health() >= target:GetMaxHealth() then return end
 
 		self.Owner:ForceSequence("heal_cycle")
 
 		self.Owner:EmitSound( "npc/vort/health_charge.wav", 100, 150, 1, CHAN_AUTO )
+		self.Owner:Freeze(true)
 
 		
 	end
 	timer.Simple(2,function() 
-		-- if IsValid(self.Owner:GetViewModel())then self.Owner:GetViewModel():StopParticles() end
 		self.Owner:StopParticles()
-		if SERVER then
-			local randomNum = math.random(ix.config.Get("VortHealMin", 5),ix.config.Get("VortHealMax", 20))
-			target:SetHealth(math.Clamp(target:Health()+randomNum, 0, target:GetMaxHealth()))
-			self.Owner:StopSound("npc/vort/health_charge.wav") 
+		if (!self.Owner:Alive()) then return end
+		if (SERVER) then
+			print(target:GetPos():Distance(self.Owner:GetShootPos()))
+			if target:GetPos():Distance(self.Owner:GetShootPos()) <= 105 then
+				local randomNum = math.random(ix.config.Get("VortHealMin", 5),ix.config.Get("VortHealMax", 20))
+				target:SetHealth(math.Clamp(target:Health()+randomNum, 0, target:GetMaxHealth()))
+				self.Owner:StopSound("npc/vort/health_charge.wav") 
+				self.Owner:Freeze(false)
+				print("dziala")
+			else
+				self.Owner:StopSound("npc/vort/health_charge.wav") 
+			self.Owner:Freeze(false)
+			end	
 		end
 	end)
 	self:SetNextPrimaryFire( CurTime() + 3 )
