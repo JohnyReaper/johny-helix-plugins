@@ -76,6 +76,8 @@ function SWEP:Precache()
 	PrecacheParticleSystem( "vortigaunt_beam" );		//the zap beam
 	PrecacheParticleSystem( "vortigaunt_beam_charge" );	//the glow particles
 	PrecacheParticleSystem( "vortigaunt_charge_token" );
+	PrecacheParticleSystem( "vortigaunt_charge_token_b" );
+	PrecacheParticleSystem( "vortigaunt_charge_token_c" );
 	util.PrecacheModel(self.ViewModel)					//the... come on,that's obvious
 end
 
@@ -223,7 +225,7 @@ function SWEP:PrimaryAttack()
 
 	if self.Owner:Health() <= 50 then 
 		if (SERVER) then
-		self.Owner:NotifyLocalized("You are too weak to heal someone!")
+		self.Owner:Notify("You are too weak to perfom a zap attack!")
 		end
 		self.Weapon:SetNextPrimaryFire(CurTime()+2)
 	return end
