@@ -12,13 +12,13 @@ if (SERVER) then
 
 	net.Receive("adminSpawnItem", function(len, client)
 		local name = net.ReadString()
-		if (!client:IsAdmin()) then return end
-		if (!client:Alive()) then return end
-		for k, v in pairs(ix.item.list) do
-			if v.name == name then
-				ix.item.Spawn(v.uniqueID, client:GetShootPos() + client:GetAimVector()*84 + Vector(0, 0, 16))
-				ix.log.Add(client, "adminSpawnItemLog", v.name)
-				break
+		if client:IsAdmin() then
+			for k, v in pairs(ix.item.list) do
+				if v.name == name then
+					ix.item.Spawn(v.uniqueID, client:GetShootPos() + client:GetAimVector()*84 + Vector(0, 0, 16))
+					ix.log.Add(client, "adminSpawnItemLog", v.name)
+					break
+				end
 			end
 		end
 	end)
