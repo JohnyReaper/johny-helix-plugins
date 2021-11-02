@@ -18,12 +18,12 @@ or
 
 `Cremator` folder from `plugins` place into your schema's plugins
 
-ex:
+e.g.
 ``` gamemodes\ixhl2rp\plugins ```
 
 then depending on which fire addon you chose, place the appropriate folder with the modified swep in your addons folder
 
-ex for vfire:
+e.g. for vfire:
 ``` garrysmod\addons\vfire_immolator ```
 
 ![Image of Cremator](https://i.imgur.com/20cZf1p.jpg)
